@@ -16,10 +16,9 @@ public class A_Deck_History
 	}
 	
 	
-	public void is_told()
+	@Override
+	public String toString()
 	{
-		System.out.println(
-			"The deck " + this.deck.provides_its_name() + " has " + this.number_of_losses + " losses and " + this.number_of_wins + " wins."
-		);
+		return "The deck " + this.deck.provides_its_name() + " has " + this.number_of_losses + " losses and " + this.number_of_wins + " wins.";
 	}
 }
