@@ -11,7 +11,7 @@ public class A_Deck_Builder {
     	for (int i = 0; i < 25; i++) {
     		the_list_of_cards_for_Keep_the_Peace.add(
     			new A_Land_Card(
-    				"Innistrad: Crimson Vow",
+    				"Arena Base Set",
     				"Plains",
     				"Plains",
     				"Basic Land"
@@ -134,7 +134,7 @@ public class A_Deck_Builder {
     	
     	for (int i = 0; i < 3; i++) {
     		the_list_of_cards_for_Keep_the_Peace.add(
-    			new An_Enchantment_Card(
+    			new An_Aura_Card(
     				"Arena Base Set",
     				new A_Mana_Cost(0, 0, 1, 0, 0, 1),
     				"Pacifism",
@@ -191,7 +191,7 @@ public class A_Deck_Builder {
     	// 51 cards
     	
 		the_list_of_cards_for_Keep_the_Peace.add(
-			new An_Enchantment_Card(
+			new An_Aura_Card(
 				"Arena Base Set",
 				new A_Mana_Cost(0, 0, 3, 0, 0, 2),
 				"Angelic Reward",
@@ -325,7 +325,309 @@ public class A_Deck_Builder {
     	// 60 cards
     	
     	return new A_Deck(the_list_of_cards_for_Keep_the_Peace, "Keep the Peace");
+	}
+	
+	
+	public A_Deck provides_Large_and_in_Charge() {
 		
+    	ArrayList<A_Card> the_list_of_cards_for_Large_and_in_Charge = new ArrayList<A_Card>();
+    	
+    	for (int i = 0; i < 25; i++) {
+    		the_list_of_cards_for_Large_and_in_Charge.add(
+    			new A_Land_Card(
+    				"Arena Base Set",
+    				"Forest",
+    				"Forest",
+    				"Basic Land"
+    			)
+    		);
+    	}
+    	// 25 cards
+    	
+    	for (int i = 0; i < 3; i++) {
+    		the_list_of_cards_for_Large_and_in_Charge.add(
+    			new A_Creature_Card(
+    				"Arena Base Set",
+    				new A_Mana_Cost(0, 0, 0, 1, 0, 0),
+    				"Jungle Delver",
+    				1,
+    				"Common",
+    				"Merfolk Warrior",
+    				new String[] {
+    					"[3G]: Put a +1/+1 counter on Jungle Delver."
+    				},
+    				1,
+    				"Creature"
+    			)
+    		);
+    	}
+    	// 28 cards
+    	
+    	for (int i = 0; i < 2; i++) {
+    		the_list_of_cards_for_Large_and_in_Charge.add(
+    			new An_Instant_Card(
+    				"Arena Base Set",
+    				new A_Mana_Cost(0, 0, 0, 1, 0, 0),
+    				"Stony Strength",
+    				"Common",
+    				new String[] {
+    					"Put a +1/+1 counter on target creature you control. Untap that creature."
+    				},
+    				"Instant"
+    			)
+    		);
+    	}
+    	// 30 cards
+    	
+    	for (int i = 0; i < 4; i++) {
+    		the_list_of_cards_for_Large_and_in_Charge.add(
+    			new A_Creature_Card(
+    				"Arena Base Set",
+    				new A_Mana_Cost(0, 0, 1, 1, 0, 0),
+    				"Ilysian Caryatid",
+    				1,
+    				"Common",
+    				"Plant",
+    				new String[] {
+    					"[T]: Add one mana of any color. If you control a creature with power 4 or greater, add two mana of any one color instead."
+    				},
+    				1,
+    				"Creature"
+    			)
+    		);
+    	}
+    	// 34 cards
+		
+    	for (int i = 0; i < 3; i++) {
+			the_list_of_cards_for_Large_and_in_Charge.add(
+				new A_Sorcery_Card(
+					"Arena Base Set",
+					new A_Mana_Cost(0, 0, 1, 1, 0, 0),
+					"Rabid Bite",
+					"Common",
+					new String[] {
+						"Target creature you control deals damage equal to its power to target creature you don't control."
+					},
+					"Sorcery"
+				)
+			);
+    	}
+		// 37 cards
+		
+    	for (int i = 0; i < 2; i++) {
+			the_list_of_cards_for_Large_and_in_Charge.add(
+				new A_Creature_Card(
+					"Arena Base Set",
+					new A_Mana_Cost(0, 0, 1, 1, 0, 0),
+					"Woodland Mystic",
+					1,
+					"Common",
+					"Elf Druid",
+					new String[] {
+						"[T]: Add [F]."
+					},
+					1,
+					"Creature"
+				)
+			);
+    	}
+		// 39 cards
+    	
+    	for (int i = 0; i < 2; i++) {
+    		the_list_of_cards_for_Large_and_in_Charge.add(
+    			new An_Enchantment_Card(
+    				"Arena Base Set",
+    				new A_Mana_Cost(0, 0, 2, 1, 0, 0),
+    				"Colossal Majesty",
+    				"Uncommon",
+    				new String[] {
+    					"At the beginning of your upkeep, if you control a creature with power 4 or greater, draw a card."
+    				},
+    				"Enchantment"
+    			)
+    		);
+    	}
+    	// 41 cards
+    	
+    	for (int i = 0; i < 2; i++) {
+			the_list_of_cards_for_Large_and_in_Charge.add(
+				new A_Creature_Card(
+					"Arena Base Set",
+					new A_Mana_Cost(0, 0, 2, 1, 0, 0),
+					"Wildwood Patrol",
+					4,
+					"Common",
+					"Centaur Scout",
+					new String[] {
+						"Trample"
+					},
+					2,
+					"Creature"
+				)
+			);
+    	}
+		// 43 cards
+    	
+    	for (int i = 0; i < 4; i++) {
+			the_list_of_cards_for_Large_and_in_Charge.add(
+				new A_Creature_Card(
+					"Arena Base Set",
+					new A_Mana_Cost(0, 0, 3, 1, 0, 0),
+					"Baloth Packhunter",
+					3,
+					"Common",
+					"Beast",
+					new String[] {
+						"Trample",
+						"When Baloth Packhunter enters the battlefield, put two +1/+1 counters on each other creature you control named Baloth Packhunter."
+					},
+					3,
+					"Creature"
+				)
+			);
+    	}
+		// 47 cards
+    	
+		the_list_of_cards_for_Large_and_in_Charge.add(
+			new A_Creature_Card(
+				"Arena Base Set",
+				new A_Mana_Cost(0, 0, 3, 1, 0, 0),
+				"Prized Unicorn",
+				2,
+				"Uncommon",
+				"Unicorn",
+				new String[] {
+					"All creatures able to block Prized Unicorn do so."
+				},
+				2,
+				"Creature"
+			)
+		);
+		// 48 cards
+		
+		for (int i = 0; i < 2; i++) {
+			the_list_of_cards_for_Large_and_in_Charge.add(
+				new A_Creature_Card(
+					"Arena Base Set",
+					new A_Mana_Cost(0, 0, 2, 2, 0, 0),
+					"Rumbling Baloth",
+					4,
+					"Common",
+					"Beast",
+					new String[] {},
+					4,
+					"Creature"
+				)
+			);
+		}
+		// 50 cards
+		
+		the_list_of_cards_for_Large_and_in_Charge.add(
+			new A_Creature_Card(
+				"Arena Base Set",
+				new A_Mana_Cost(0, 0, 3, 1, 0, 0),
+				"World Shaper",
+				3,
+				"Rare",
+				"Merfolk Shaman",
+				new String[] {
+					"Whenever World Shaper attacks, you may mill three cards.",
+					"When World Shaper dies, return all land cards from your graveyard to the battlefield tapped."
+				},
+				3,
+				"Creature"
+			)
+		);
+		// 51 cards
+		
+		for (int i = 0; i < 2; i++) {
+			the_list_of_cards_for_Large_and_in_Charge.add(
+				new A_Creature_Card(
+					"Arena Base Set",
+					new A_Mana_Cost(0, 0, 0, 5, 0, 0),
+					"Gigantosaurus",
+					10,
+					"Rare",
+					"Dinosaur",
+					new String[] {},
+					10,
+					"Creature"
+				)
+			);
+		}
+		// 53 cards
+		
+		for (int i = 0; i < 2; i++) {
+			the_list_of_cards_for_Large_and_in_Charge.add(
+				new A_Creature_Card(
+					"Arena Base Set",
+					new A_Mana_Cost(0, 0, 3, 2, 0, 0),
+					"Sentinel Spider",
+					4,
+					"Uncommon",
+					"Spider",
+					new String[] {"Vigilance, Reach"},
+					4,
+					"Creature"
+				)
+			);
+		}
+		// 55 cards
+		
+		for (int i = 0; i < 2; i++) {
+			the_list_of_cards_for_Large_and_in_Charge.add(
+				new A_Creature_Card(
+					"Arena Base Set",
+					new A_Mana_Cost(0, 0, 5, 1, 0, 0),
+					"Affectionate Indrik",
+					4,
+					"Uncommon",
+					"Beast",
+					new String[] {"When Affectionate Indrik enters the battlefield, you may have it fight target creature you don't control."},
+					4,
+					"Creature"
+				)
+			);
+		}
+		// 57 cards
+    	
+		the_list_of_cards_for_Large_and_in_Charge.add(
+			new An_Aura_Card(
+				"Arena Base Set",
+				new A_Mana_Cost(0, 0, 4, 2, 0, 0),
+				"Epic Proportions",
+				"Rare",
+				"Aura",
+				new String[] {
+					"Flash",
+					"Enchant creature",
+					"Enchanted creature gets +5/+5 and has trample."
+				},
+				"Enchantment"
+			)
+		);
+		// 58 cards
+		
+		for (int i = 0; i < 2; i++) {
+			the_list_of_cards_for_Large_and_in_Charge.add(
+				new A_Creature_Card(
+					"Arena Base Set",
+					new A_Mana_Cost(0, 0, 5, 2, 0, 0),
+					"Rampaging Brontodon",
+					7,
+					"Rare",
+					"Dinosaur",
+					new String[] {
+						"Trample",
+						"Whenever Rampaging Brontodon attacks, it gets +1/+1 until end of turn for each land you control."},
+					7,
+					"Creature"
+				)
+			);
+		}
+		// 60 cards
+		
+    	return new A_Deck(the_list_of_cards_for_Large_and_in_Charge, "Large_and_in_Charge");
 	}
 	
 }
