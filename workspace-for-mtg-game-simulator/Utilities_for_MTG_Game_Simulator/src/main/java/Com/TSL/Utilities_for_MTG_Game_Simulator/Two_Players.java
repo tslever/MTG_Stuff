@@ -4,6 +4,7 @@ package Com.TSL.Utilities_for_MTG_Game_Simulator;
 
 public class Two_Players {
 	
+	private A_Player active_player;
 	private A_Player first_player;
 	private A_Player second_player;
 	private A_Stack stack;
@@ -25,13 +26,12 @@ public class Two_Players {
 	public void decide_the_starting_player() {
 		
 		if (A_Coin_Flip.random_value() == A_Coin_Flip.HEADS) {
-			this.first_player.becomes_the_active_player();
-			System.out.println(this.first_player.provides_her_name() + ", Player 1, is the starting player.\n");
+			this.active_player = this.first_player;
 		}
 		else {
-			this.second_player.becomes_the_active_player();
-			System.out.println(this.second_player.provides_her_name() + ", Player 2, is the starting player.\n");
+			this.active_player = this.second_player;
 		}
+		System.out.println(this.active_player.provides_her_name() + " is the starting player.\n");
 		
 	}
 	
@@ -42,10 +42,18 @@ public class Two_Players {
 	}
 	
 	
+	// TODO: Write more rules here.
+	/** Rule 103.7:
+	 * The starting player takes their first turn.
+	 */
+	
 	public void play() {
 		this.decide_the_starting_player();
 		this.shuffle_their_decks();
 		this.draw_hands();
+		// TODO: Implement mulligan.
+		//this.mulligan();
+		this.active_player.takes_her_turn();
 	}
 	
 	
