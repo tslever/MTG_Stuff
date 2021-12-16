@@ -19,4 +19,9 @@ public abstract class A_Permanent {
 		this.tapped_status = false;
 	}
 	
+	@Override
+	public String toString() {
+		return this.name;
+	}
+	
 }

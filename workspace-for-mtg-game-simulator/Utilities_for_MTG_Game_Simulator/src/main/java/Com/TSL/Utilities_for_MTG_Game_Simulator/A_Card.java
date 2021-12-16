@@ -14,6 +14,17 @@ public abstract class A_Card
 		this.type = the_type_to_use;
 	}
 	
+	
+	public String provides_its_name() {
+		return this.name;
+	}
+	
+	
+	public String provides_its_type() {
+		return this.type;
+	}
+	
+	
 	@Override
 	public String toString() {
 		return this.name;
