@@ -26,9 +26,11 @@ public class Two_Players {
 	public void decide_the_starting_player() {
 		
 		if (A_Coin_Flip.random_value() == A_Coin_Flip.HEADS) {
+			this.first_player.becomes_the_starting_player();
 			this.active_player = this.first_player;
 		}
 		else {
+			this.second_player.becomes_the_starting_player();
 			this.active_player = this.second_player;
 		}
 		System.out.println(this.active_player.provides_her_name() + " is the starting player.\n");

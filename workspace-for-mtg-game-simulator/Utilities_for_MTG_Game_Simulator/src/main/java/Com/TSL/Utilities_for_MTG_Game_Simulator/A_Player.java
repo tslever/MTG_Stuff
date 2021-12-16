@@ -23,6 +23,7 @@ public class A_Player
 	private ArrayList<A_Permanent> list_of_permanents_that_should_be_untapped;
 	private String name;
 	private A_Part_Of_The_Battlefield part_of_the_battlefield;
+	private boolean was_starting_player;
 	
 	
 	/** Rule 103.3:
@@ -41,6 +42,12 @@ public class A_Player
 		this.list_of_permanents_that_should_be_untapped = new ArrayList<A_Permanent>();
 		this.name = the_name_to_use;
 		this.part_of_the_battlefield = new A_Part_Of_The_Battlefield();
+		this.was_starting_player = false;
+	}
+	
+	
+	public void becomes_the_starting_player() {
+		this.was_starting_player = true;
 	}
 	
 	
@@ -57,7 +64,10 @@ public class A_Player
 		this.completes_her_upkeep_step();
 		
 		// Rule 103.7a: In a two-player game, the player who plays first skips the draw step (see rule 504, "Draw Step") of their first turn.
-		if (this.index_of_the_present_turn != 0) {
+		if ((this.was_starting_player) && (this.index_of_the_present_turn == 0)) {
+			System.out.println("    Because " + this.name + " is the starting player and this is the first turn, the draw step is skipped.");
+		}
+		else {
 			this.completes_her_draw_step();
 		}
 
@@ -87,9 +97,17 @@ public class A_Player
 		// Rule 500.5: When a phase or step begins, any effects scheduled to last "until" that phase or step expire.
 		// Rule 500.6: When a phase or step begins, any abilities that trigger "at the beginning of" that phase or step trigger. They are put on the stack the next time a player would receive priority. (See rule 117, "Timing and Priority.")
 		
+		// Rule 504.1: First, the active player draws a card. This turn-based action doesn't use the stack.
+		this.draws();
+		
+		// Rule 504.2: Second, the active player gets priority. (See rule 117, "Timing and Priority.")
+		this.has_priority = true;
+		
 		// Rule 500.2: A phase or step in which players receive priority ends when the stack is empty and all players pass in succession.
 		// Rule 500.4: When a step or phase ends, any unused mana left in a player's mana pool empties. This turn-based action doesn't use the stack.
 		// Rule 500.5: When a phase or step ends, any effects scheduled to last "until end of" that phase or step expire.
+		
+		this.has_priority = false;
 	}
 	
 	
@@ -170,6 +188,8 @@ public class A_Player
 		// Rule 500.2: A phase or step in which players receive priority ends when the stack is empty and all players pass in succession.
 		// Rule 500.4: When a step or phase ends, any unused mana left in a player's mana pool empties. This turn-based action doesn't use the stack.
 		// Rule 500.5: When a phase or step ends, any effects scheduled to last "until end of" that phase or step expire.
+		
+		this.has_priority = false;
 	}
 	
 	
@@ -210,6 +230,15 @@ public class A_Player
 	
 	public void draws() {
 		this.hand.receives(this.deck.provides_a_card());
+		
+		System.out.println(
+			"After drawing, the deck of " + this.name + " has " + this.deck.provides_its_number_of_cards() + " cards and contains the following.\n" +
+			this.deck + "\n"
+		);
+		System.out.println(
+			"After drawing, the hand of " + this.name + " has " + this.hand.provides_its_number_of_cards() + " cards and contains the following.\n" +
+			this.hand + "\n"
+		);
 	}
 	
 	
@@ -221,14 +250,6 @@ public class A_Player
 		for (int i = 0; i < STARTING_HAND_SIZE; i++) {
 			this.draws();
 		}
-		System.out.println(
-			"After drawing, the deck of " + this.name + " has " + this.deck.provides_its_number_of_cards() + " cards and contains the following.\n" +
-			this.deck + "\n"
-		);
-		System.out.println(
-			"After drawing, the hand of " + this.name + " has " + this.hand.provides_its_number_of_cards() + " cards and contains the following.\n" +
-			this.hand + "\n"
-		);
 	}
 	
 	
