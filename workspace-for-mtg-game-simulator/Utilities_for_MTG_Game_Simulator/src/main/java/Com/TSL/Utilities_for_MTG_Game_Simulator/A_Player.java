@@ -17,6 +17,7 @@ public class A_Player
 	private An_Exile exile;
 	private A_Graveyard graveyard;
 	private A_Hand hand;
+	private boolean has_priority;
 	private int index_of_the_present_turn;
 	private int life;
 	private ArrayList<A_Permanent> list_of_permanents_that_should_be_untapped;
@@ -34,6 +35,7 @@ public class A_Player
 		this.exile = new An_Exile();
 		this.graveyard = new A_Graveyard();
 		this.hand = new A_Hand();
+		this.has_priority = false;
 		this.index_of_the_present_turn = 0;
 		this.life = 20;
 		this.list_of_permanents_that_should_be_untapped = new ArrayList<A_Permanent>();
@@ -59,6 +61,7 @@ public class A_Player
 			this.completes_her_draw_step();
 		}
 
+		// Rule 500.2: A phase or step in which players receive priority ends when the stack is empty and all players pass in succession.
 		// Rule 500.4: When a step or phase ends, any unused mana left in a player's mana pool empties. This turn-based action doesn't use the stack.
 		// Rule 500.5: When a phase or step ends, any effects scheduled to last "until end of" that phase or step expire.
 	}
@@ -71,6 +74,7 @@ public class A_Player
 		// Rule 500.5: When a phase or step begins, any effects scheduled to last "until" that phase or step expire.
 		// Rule 500.6: When a phase or step begins, any abilities that trigger "at the beginning of" that phase or step trigger. They are put on the stack the next time a player would receive priority. (See rule 117, "Timing and Priority.")
 		
+		// Rule 500.2: A phase or step in which players receive priority ends when the stack is empty and all players pass in succession.
 		// Rule 500.4: When a step or phase ends, any unused mana left in a player's mana pool empties. This turn-based action doesn't use the stack.
 		// Rule 500.5: When a phase or step ends, any effects scheduled to last "until end of" that phase or step expire... Effects that last "until end of combat" expire at the end of the combat phase.
 	}
@@ -93,6 +97,13 @@ public class A_Player
 		
 		System.out.println(this.name + " is completing their end phase.");
 		
+		// Rule 500.5: When a phase or step begins, any effects scheduled to last "until" that phase or step expire.
+		// Rule 500.6: When a phase or step begins, any abilities that trigger "at the beginning of" that phase or step trigger. They are put on the stack the next time a player would receive priority. (See rule 117, "Timing and Priority.")
+		
+		// Rule 500.2: A phase or step in which players receive priority ends when the stack is empty and all players pass in succession.
+		// Rule 500.4: When a step or phase ends, any unused mana left in a player's mana pool empties. This turn-based action doesn't use the stack.
+		// Rule 500.5: When a phase or step ends, any effects scheduled to last "until end of" that phase or step expire... Effects that last "until end of combat" expire at the end of the combat phase.
+		
 	}
 	
 	
@@ -100,6 +111,12 @@ public class A_Player
 		
 		System.out.println(this.name + " is completing their precombat main phase.");
 		
+		// Rule 500.5: When a phase or step begins, any effects scheduled to last "until" that phase or step expire.
+		// Rule 500.6: When a phase or step begins, any abilities that trigger "at the beginning of" that phase or step trigger. They are put on the stack the next time a player would receive priority. (See rule 117, "Timing and Priority.")
+		
+		// Rule 500.2: A phase or step in which players receive priority ends when the stack is empty and all players pass in succession.
+		// Rule 500.4: When a step or phase ends, any unused mana left in a player's mana pool empties. This turn-based action doesn't use the stack.
+		// Rule 500.5: When a phase or step ends, any effects scheduled to last "until end of" that phase or step expire... Effects that last "until end of combat" expire at the end of the combat phase.
 	}
 	
 	
@@ -107,6 +124,12 @@ public class A_Player
 	
 		System.out.println(this.name + " is completing their postcombat main phase.");
 		
+		// Rule 500.5: When a phase or step begins, any effects scheduled to last "until" that phase or step expire.
+		// Rule 500.6: When a phase or step begins, any abilities that trigger "at the beginning of" that phase or step trigger. They are put on the stack the next time a player would receive priority. (See rule 117, "Timing and Priority.")
+		
+		// Rule 500.2: A phase or step in which players receive priority ends when the stack is empty and all players pass in succession.
+		// Rule 500.4: When a step or phase ends, any unused mana left in a player's mana pool empties. This turn-based action doesn't use the stack.
+		// Rule 500.5: When a phase or step ends, any effects scheduled to last "until end of" that phase or step expire... Effects that last "until end of combat" expire at the end of the combat phase.
 	}
 	
 	
@@ -130,10 +153,23 @@ public class A_Player
 	}
 	
 	
+	// TODO: Allow for adding abilities that triggered during the untap stap and abilities that triggered at the beginning of the upkeep step to the stack.
+	// TODO: Allow for processing the stack.
 	public void completes_her_upkeep_step() {
 		
 		System.out.println("    " + this.name + " is completing their upkeep step.");
 		
+		// Rule 500.5: When a phase or step begins, any effects scheduled to last "until" that phase or step expire.
+		// Rule 500.6: When a phase or step begins, any abilities that trigger "at the beginning of" that phase or step trigger. They are put on the stack the next time a player would receive priority. (See rule 117, "Timing and Priority.")
+		
+		// Rule 503.1a: Any abilities that triggered during the untap step and any abilities that triggered at the beginning of the upkeep [step] are put onto the stack before the active player gets priority; the order in which they triggered doesn't matter. (See rule 603, "Handling Triggered Abilities.")
+		
+		// Rule 503.1: The upkeep step has no turn-based actions. Once it begins, the active player gets priority. (See rule 117, "Timing and Priority.")
+		this.has_priority = true;
+		
+		// Rule 500.2: A phase or step in which players receive priority ends when the stack is empty and all players pass in succession.
+		// Rule 500.4: When a step or phase ends, any unused mana left in a player's mana pool empties. This turn-based action doesn't use the stack.
+		// Rule 500.5: When a phase or step ends, any effects scheduled to last "until end of" that phase or step expire.
 	}
 	
 	
