@@ -142,6 +142,23 @@ public class A_Player
 		this.plays_a_land();
 		
 		// Rule 505.5a: [A] main phase is the only phase in which a player can normally cast artifact, creature, enchantment, planeswalker, and sorcery spells. The active player may cast these spells.
+		// Rule 601.2: To cast a spell is to [use a card to create a spell], put [the spell] on the stack, and pay its mana costs, so that [the spell] will eventually resolve and have its effect. Casting a spell includes proposal of the spell (rules 601.2a-d) and determination and payment of costs (rules 601.2f-h). To cast a spell, a player follows the steps listed below, in order. A player must be legally allowed to cast the spell to begin this process (see rule 601.3). If a player is unable to comply with the requirements of a step listed below while performing that step, the casting of the spell is illegal; the game returns to the moment before the casting of that spell was proposed (see rule 723, "Handling Illegal Actions").
+		// Rule 601.2a: To propose the casting of a spell, a player first [uses a card to create a spell and puts the spell on] the stack. [The spell] becomes the topmost object on the stack. [The spell] has all the characteristics of the card... associated with it, and [the casting] player becomes its controller. The spell remains on the stack until it's countered, it resolves, or an effect moves it elsewhere.
+		// Rule 601.2e: The game checks to see if the proposed spell can legally be cast. If the proposed spell is illegal, the game returns to the moment before the casting of that spell was proposed (see rule 723, "Handling Illegal Actions").
+		A_Mana_Pool the_available_mana = this.determines_available_mana();
+		System.out.println("The following mana is available.\n" + the_available_mana);
+		
+		ArrayList<A_Card> the_list_of_cards_that_may_be_used_to_cast_spells = new ArrayList<A_Card>();
+		for (A_Card the_card : this.hand.provides_its_list_of_nonland_cards()) {
+			if (the_available_mana.is_sufficient_for(the_card.provides_its_mana_cost())) {
+				the_list_of_cards_that_may_be_used_to_cast_spells.add(the_card);
+				System.out.println("The mana pool of\n" + the_available_mana + "\nis sufficient for the mana cost of " + the_card.provides_its_name() + ",\n" + the_card.provides_its_mana_cost());
+			}
+			else {
+				System.out.println("The mana pool of\n" + the_available_mana + "\nis insufficient for the mana cost of " + the_card.provides_its_name() + ",\n" + the_card.provides_its_mana_cost());
+			}
+		}
+		
 		
 		// Rule 500.2: A phase or step in which players receive priority ends when the stack is empty and all players pass in succession.
 		// Rule 505.2: The main phase has no steps, so a main phase ends when all players pass in succession while the stack is empty.
@@ -204,6 +221,34 @@ public class A_Player
 		// Rule 500.5: When a phase or step ends, any effects scheduled to last "until end of" that phase or step expire.
 		
 		this.has_priority = false;
+	}
+	
+	
+	public A_Mana_Pool determines_available_mana() {
+		
+		A_Mana_Pool the_available_mana = new A_Mana_Pool(0, 0, 0, 0, 0, 0);
+		
+		for (A_Land the_land : this.part_of_the_battlefield.provides_its_list_of_lands()) {
+			switch (the_land.provides_its_name()) {
+				case "Swamp":
+					the_available_mana.increases_by_one_black_mana();
+					break;
+				case "Island":
+					the_available_mana.increases_by_one_blue_mana();
+					break;
+				case "Forest":
+					the_available_mana.increases_by_one_green_mana();
+					break;
+				case "Mountain":
+					the_available_mana.increases_by_one_red_mana();
+					break;
+				case "Plains":
+					the_available_mana.increases_by_one_white_mana();
+					break;
+			}
+		}
+		
+		return the_available_mana;
 	}
 	
 	

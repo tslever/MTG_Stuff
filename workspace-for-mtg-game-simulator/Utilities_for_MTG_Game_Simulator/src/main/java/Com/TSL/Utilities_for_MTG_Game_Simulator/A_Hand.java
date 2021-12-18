@@ -23,9 +23,87 @@ public class A_Hand {
 		this.list_of_sorcery_cards = new ArrayList<A_Sorcery_Card>();
 	}
 	
+	public ArrayList<An_Artifact_Card> provides_its_list_of_artifact_cards() {
+		return this.list_of_artifact_cards;
+	}
+	
+	public ArrayList<A_Card> provides_its_list_of_cards() {
+		
+		ArrayList<A_Card> the_list_of_cards = new ArrayList<A_Card>();
+		
+		for (An_Artifact_Card the_artifact_card : this.list_of_artifact_cards) {
+			the_list_of_cards.add(the_artifact_card);
+		}
+		for (A_Creature_Card the_creature_card : this.list_of_creature_cards) {
+			the_list_of_cards.add(the_creature_card);
+		}
+		for (An_Enchantment_Card the_enchantment_card : this.list_of_enchantment_cards) {
+			the_list_of_cards.add(the_enchantment_card);
+		}
+		for (An_Instant_Card the_instant_card : this.list_of_instant_cards) {
+			the_list_of_cards.add(the_instant_card);
+		}
+		for (A_Land_Card the_land_card : this.list_of_land_cards) {
+			the_list_of_cards.add(the_land_card);
+		}
+		for (A_Planeswalker_Card the_planeswalker_card : this.list_of_planeswalker_cards) {
+			the_list_of_cards.add(the_planeswalker_card);
+		}
+		for (A_Sorcery_Card the_sorcery_card : this.list_of_sorcery_cards) {
+			the_list_of_cards.add(the_sorcery_card);
+		}
+		
+		return the_list_of_cards;
+	}
+	
+	public ArrayList<A_Creature_Card> provides_its_list_of_creature_cards() {
+		return this.list_of_creature_cards;
+	}
+	
+	public ArrayList<An_Enchantment_Card> provides_its_list_of_enchantment_cards() {
+		return this.list_of_enchantment_cards;
+	}
+	
+	public ArrayList<An_Instant_Card> provides_its_list_of_instant_cards() {
+		return this.list_of_instant_cards;
+	}
 	
 	public ArrayList<A_Land_Card> provides_its_list_of_land_cards() {
 		return this.list_of_land_cards;
+	}
+
+	public ArrayList<A_Card> provides_its_list_of_nonland_cards() {
+		
+		ArrayList<A_Card> the_list_of_cards = new ArrayList<A_Card>();
+		
+		for (An_Artifact_Card the_artifact_card : this.list_of_artifact_cards) {
+			the_list_of_cards.add(the_artifact_card);
+		}
+		for (A_Creature_Card the_creature_card : this.list_of_creature_cards) {
+			the_list_of_cards.add(the_creature_card);
+		}
+		for (An_Enchantment_Card the_enchantment_card : this.list_of_enchantment_cards) {
+			the_list_of_cards.add(the_enchantment_card);
+		}
+		for (An_Instant_Card the_instant_card : this.list_of_instant_cards) {
+			the_list_of_cards.add(the_instant_card);
+		}
+		for (A_Planeswalker_Card the_planeswalker_card : this.list_of_planeswalker_cards) {
+			the_list_of_cards.add(the_planeswalker_card);
+		}
+		for (A_Sorcery_Card the_sorcery_card : this.list_of_sorcery_cards) {
+			the_list_of_cards.add(the_sorcery_card);
+		}
+		
+		return the_list_of_cards;
+	}
+	
+	public ArrayList<A_Planeswalker_Card> provides_its_list_of_planeswalker_cards() {
+		return this.list_of_planeswalker_cards;
+	}
+	
+	public ArrayList<A_Sorcery_Card> provides_its_list_of_sorcery_cards() {
+		return this.list_of_sorcery_cards;
 	}
 	
 	

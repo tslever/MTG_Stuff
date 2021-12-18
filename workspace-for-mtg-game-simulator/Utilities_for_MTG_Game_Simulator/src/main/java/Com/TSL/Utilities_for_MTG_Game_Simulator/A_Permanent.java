@@ -15,6 +15,10 @@ public abstract class A_Permanent {
 		return this.tapped_status;
 	}
 	
+	public String provides_its_name() {
+		return this.name;
+	}
+	
 	public void untaps() {
 		this.tapped_status = false;
 	}

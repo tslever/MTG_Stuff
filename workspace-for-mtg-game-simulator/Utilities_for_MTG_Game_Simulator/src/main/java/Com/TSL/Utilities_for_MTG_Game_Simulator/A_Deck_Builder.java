@@ -12,6 +12,7 @@ public class A_Deck_Builder {
     		the_list_of_cards_for_Keep_the_Peace.add(
     			new A_Land_Card(
     				"Arena Base Set",
+    				new A_Mana_Cost(0, 0, 0, 0, 0, 0),
     				"Plains",
     				"Plains",
     				"Basic Land"
@@ -336,6 +337,7 @@ public class A_Deck_Builder {
     		the_list_of_cards_for_Large_and_in_Charge.add(
     			new A_Land_Card(
     				"Arena Base Set",
+    				new A_Mana_Cost(0, 0, 0, 0, 0, 0),
     				"Forest",
     				"Forest",
     				"Basic Land"
