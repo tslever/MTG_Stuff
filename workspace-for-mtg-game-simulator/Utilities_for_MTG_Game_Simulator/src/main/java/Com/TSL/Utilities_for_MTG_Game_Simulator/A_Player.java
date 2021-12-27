@@ -2,6 +2,7 @@ package Com.TSL.Utilities_for_MTG_Game_Simulator;
 
 
 import java.util.ArrayList;
+import java.util.Stack;
 import org.apache.commons.math3.random.RandomDataGenerator;
 
 
@@ -24,6 +25,8 @@ public class A_Player
 	private ArrayList<A_Permanent> list_of_permanents_that_should_be_untapped;
 	private String name;
 	private A_Part_Of_The_Battlefield part_of_the_battlefield;
+	private RandomDataGenerator random_data_generator;
+	private Stack<A_Spell> stack;
 	private boolean was_starting_player;
 	
 	
@@ -31,7 +34,7 @@ public class A_Player
 	 * Each player begins the game with a starting life total of 20.
 	 */
 	
-	public A_Player(A_Deck the_deck_to_use, String the_name_to_use)
+	public A_Player(A_Deck the_deck_to_use, String the_name_to_use, Stack<A_Spell> the_stack_to_use)
 	{
 		this.deck = the_deck_to_use;
 		this.exile = new An_Exile();
@@ -43,12 +46,26 @@ public class A_Player
 		this.list_of_permanents_that_should_be_untapped = new ArrayList<A_Permanent>();
 		this.name = the_name_to_use;
 		this.part_of_the_battlefield = new A_Part_Of_The_Battlefield();
+		this.random_data_generator = new RandomDataGenerator();
+		this.stack = the_stack_to_use;
 		this.was_starting_player = false;
 	}
 	
 	
 	public void becomes_the_starting_player() {
 		this.was_starting_player = true;
+	}
+	
+	
+	public void casts_a_spell_based_on_a_card_from(ArrayList<A_Card> the_list_of_cards_that_may_be_used_to_cast_spells) {
+		
+		int the_index_of_the_card_to_use = this.random_data_generator.nextInt(0, the_list_of_cards_that_may_be_used_to_cast_spells.size());
+		if (the_index_of_the_card_to_use != the_list_of_cards_that_may_be_used_to_cast_spells.size()) {
+			A_Card the_card_to_use = the_list_of_cards_that_may_be_used_to_cast_spells.remove(the_index_of_the_card_to_use);
+			A_Spell the_spell = new A_Spell(the_card_to_use.provides_its_name(), the_card_to_use.provides_its_type());
+			this.stack.push(the_spell);
+		}
+		
 	}
 	
 	
@@ -148,17 +165,14 @@ public class A_Player
 		A_Mana_Pool the_available_mana = this.determines_available_mana();
 		System.out.println("The following mana is available.\n" + the_available_mana);
 		
-		ArrayList<A_Card> the_list_of_cards_that_may_be_used_to_cast_spells = new ArrayList<A_Card>();
-		for (A_Card the_card : this.hand.provides_its_list_of_nonland_cards()) {
-			if (the_available_mana.is_sufficient_for(the_card.provides_its_mana_cost())) {
-				the_list_of_cards_that_may_be_used_to_cast_spells.add(the_card);
-				System.out.println("The mana pool of\n" + the_available_mana + "\nis sufficient for the mana cost of " + the_card.provides_its_name() + ",\n" + the_card.provides_its_mana_cost());
-			}
-			else {
-				System.out.println("The mana pool of\n" + the_available_mana + "\nis insufficient for the mana cost of " + the_card.provides_its_name() + ",\n" + the_card.provides_its_mana_cost());
-			}
+		ArrayList<A_Card> the_list_of_cards_that_may_be_used_to_cast_spells = this.provides_a_list_of_cards_that_are_playable_given(the_available_mana);
+		System.out.println("The following cards are playable.");
+		for (A_Card the_card : the_list_of_cards_that_may_be_used_to_cast_spells) {
+			System.out.println(the_card.provides_its_name());
 		}
-		
+
+		this.casts_a_spell_based_on_a_card_from(the_list_of_cards_that_may_be_used_to_cast_spells);
+		//System.out.println(this.stack.peek().provides_its_name());
 		
 		// Rule 500.2: A phase or step in which players receive priority ends when the stack is empty and all players pass in succession.
 		// Rule 505.2: The main phase has no steps, so a main phase ends when all players pass in succession while the stack is empty.
@@ -317,13 +331,31 @@ public class A_Player
 		ArrayList<A_Land_Card> the_list_of_land_cards = this.hand.provides_its_list_of_land_cards();
 		if (this.hand.provides_its_number_of_land_cards() > 0) {
 			System.out.println("    " + this.name + " is playing a land.");
-			int the_index_of_the_land_card_to_play = (new RandomDataGenerator()).nextInt(0, this.hand.provides_its_number_of_land_cards() - 1);
+			int the_index_of_the_land_card_to_play = this.random_data_generator.nextInt(0, this.hand.provides_its_number_of_land_cards() - 1);
 			A_Land_Card the_land_card_to_play = this.hand.provides_the_land_card_at_index(the_index_of_the_land_card_to_play);
 			this.part_of_the_battlefield.provides_its_list_of_lands().add(new A_Land(the_land_card_to_play.provides_its_name(), false));
 			
 			System.out.println("After playing a land card, the hand of " + this.name + " has " + this.hand.provides_its_number_of_cards() + " cards and contains the following.\n" + this.hand);
 			System.out.println("After playing a land card, the part of the battlefield of " + this.name + " has " + this.part_of_the_battlefield.provides_its_number_of_cards() + " cards and contains the following.\n" + this.part_of_the_battlefield);
 		}
+		
+	}
+	
+	
+	public ArrayList<A_Card> provides_a_list_of_cards_that_are_playable_given(A_Mana_Pool the_available_mana) {
+		
+		ArrayList<A_Card> the_list_of_cards_that_may_be_used_to_cast_spells = new ArrayList<A_Card>();
+		for (A_Card the_card : this.hand.provides_its_list_of_nonland_cards()) {
+			if (the_available_mana.is_sufficient_for(the_card.provides_its_mana_cost())) {
+				the_list_of_cards_that_may_be_used_to_cast_spells.add(the_card);
+				//System.out.println("The mana pool of\n" + the_available_mana + "\nis sufficient for the mana cost of " + the_card.provides_its_name() + ",\n" + the_card.provides_its_mana_cost());
+			}
+			//else {
+			//	System.out.println("The mana pool of\n" + the_available_mana + "\nis insufficient for the mana cost of " + the_card.provides_its_name() + ",\n" + the_card.provides_its_mana_cost());
+			//}
+		}
+		
+		return the_list_of_cards_that_may_be_used_to_cast_spells;
 		
 	}
 	
@@ -364,4 +396,5 @@ public class A_Player
 			the_permanent.untaps();
 		}
 	}
+
 }

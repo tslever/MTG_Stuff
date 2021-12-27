@@ -7,14 +7,12 @@ public class Two_Players {
 	private A_Player active_player;
 	private A_Player first_player;
 	private A_Player second_player;
-	private A_Stack stack;
 	
 	
 	public Two_Players(A_Player the_first_player_to_use, A_Player the_second_player_to_use) {
 		
 		this.first_player = the_first_player_to_use;
 		this.second_player = the_second_player_to_use;
-		this.stack = new A_Stack();
 	}
 	
 	
