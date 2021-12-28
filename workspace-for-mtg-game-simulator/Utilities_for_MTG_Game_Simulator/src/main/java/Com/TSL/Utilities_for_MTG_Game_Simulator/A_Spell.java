@@ -15,4 +15,13 @@ public class A_Spell {
 		return this.name;
 	}
 	
+	public String provides_its_type() {
+		return this.type;
+	}
+	
+	@Override
+	public String toString() {
+		return this.name;
+	}
+	
 }

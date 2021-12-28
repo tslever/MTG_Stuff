@@ -56,6 +56,16 @@ public class A_Part_Of_The_Battlefield {
 	}
 	
 	
+	public void receives_creature(A_Creature the_creature) {
+		this.list_of_creatures.add(the_creature);
+	}
+	
+	
+	public void receives_land(A_Land the_land) {
+		this.list_of_lands.add(the_land);
+	}
+	
+	
 	@Override
 	public String toString() {
 		StringBuilder the_string_builder = new StringBuilder("Part of the Battlefield");

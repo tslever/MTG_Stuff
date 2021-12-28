@@ -1,7 +1,7 @@
 package Com.TSL.Utilities_for_MTG_Game_Simulator;
 
 
-public class A_Mana_Pool extends A_Mana_Cost {
+public class A_Mana_Pool extends A_Mana_Set {
 
 	public A_Mana_Pool(
 		int the_number_of_black_mana_to_use,

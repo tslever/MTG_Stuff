@@ -2,7 +2,6 @@ package Com.TSL.Utilities_for_MTG_Game_Simulator;
 
 
 import java.util.ArrayList;
-import java.util.Stack;
 import org.apache.commons.math3.random.RandomDataGenerator;
 
 
@@ -23,10 +22,11 @@ public class A_Player
 	private int index_of_the_present_turn;
 	private int life;
 	private ArrayList<A_Permanent> list_of_permanents_that_should_be_untapped;
+	private A_Mana_Pool mana_pool;
 	private String name;
 	private A_Part_Of_The_Battlefield part_of_the_battlefield;
 	private RandomDataGenerator random_data_generator;
-	private Stack<A_Spell> stack;
+	private A_Stack stack;
 	private boolean was_starting_player;
 	
 	
@@ -34,7 +34,7 @@ public class A_Player
 	 * Each player begins the game with a starting life total of 20.
 	 */
 	
-	public A_Player(A_Deck the_deck_to_use, String the_name_to_use, Stack<A_Spell> the_stack_to_use)
+	public A_Player(A_Deck the_deck_to_use, String the_name_to_use, A_Stack the_stack_to_use)
 	{
 		this.deck = the_deck_to_use;
 		this.exile = new An_Exile();
@@ -44,6 +44,7 @@ public class A_Player
 		this.index_of_the_present_turn = 0;
 		this.life = 20;
 		this.list_of_permanents_that_should_be_untapped = new ArrayList<A_Permanent>();
+		this.mana_pool = new A_Mana_Pool(0, 0, 0, 0, 0, 0);
 		this.name = the_name_to_use;
 		this.part_of_the_battlefield = new A_Part_Of_The_Battlefield();
 		this.random_data_generator = new RandomDataGenerator();
@@ -57,13 +58,15 @@ public class A_Player
 	}
 	
 	
-	public void casts_a_spell_based_on_a_card_from(ArrayList<A_Card> the_list_of_cards_that_may_be_used_to_cast_spells) {
+	public A_Card chooses_a_card_to_use_to_cast_a_spell_from(ArrayList<A_Card> the_list_of_cards_that_may_be_used_to_cast_spells) {
 		
 		int the_index_of_the_card_to_use = this.random_data_generator.nextInt(0, the_list_of_cards_that_may_be_used_to_cast_spells.size());
 		if (the_index_of_the_card_to_use != the_list_of_cards_that_may_be_used_to_cast_spells.size()) {
 			A_Card the_card_to_use = the_list_of_cards_that_may_be_used_to_cast_spells.remove(the_index_of_the_card_to_use);
-			A_Spell the_spell = new A_Spell(the_card_to_use.provides_its_name(), the_card_to_use.provides_its_type());
-			this.stack.push(the_spell);
+			return the_card_to_use;
+		}
+		else {
+			return null;
 		}
 		
 	}
@@ -171,8 +174,21 @@ public class A_Player
 			System.out.println(the_card.provides_its_name());
 		}
 
-		this.casts_a_spell_based_on_a_card_from(the_list_of_cards_that_may_be_used_to_cast_spells);
-		//System.out.println(this.stack.peek().provides_its_name());
+		A_Card the_card_to_use_to_cast_a_spell = this.chooses_a_card_to_use_to_cast_a_spell_from(the_list_of_cards_that_may_be_used_to_cast_spells);
+		if (the_card_to_use_to_cast_a_spell != null) {
+			// Provide mana equal to the mana cost of the card.
+			// Cast the card.
+		}
+		
+		System.out.println("The stack contains the following spells.\n" + this.stack);
+		
+		while (this.stack.contains_spells()) {
+			A_Spell the_spell = this.stack.provides_its_top_spell();
+			if (the_spell.provides_its_type().equals("Creature")) {
+				this.part_of_the_battlefield.receives_creature(new A_Creature(the_spell.provides_its_name(), false));
+			}
+		}
+		System.out.println(this.part_of_the_battlefield);
 		
 		// Rule 500.2: A phase or step in which players receive priority ends when the stack is empty and all players pass in succession.
 		// Rule 505.2: The main phase has no steps, so a main phase ends when all players pass in succession while the stack is empty.
@@ -333,7 +349,7 @@ public class A_Player
 			System.out.println("    " + this.name + " is playing a land.");
 			int the_index_of_the_land_card_to_play = this.random_data_generator.nextInt(0, this.hand.provides_its_number_of_land_cards() - 1);
 			A_Land_Card the_land_card_to_play = this.hand.provides_the_land_card_at_index(the_index_of_the_land_card_to_play);
-			this.part_of_the_battlefield.provides_its_list_of_lands().add(new A_Land(the_land_card_to_play.provides_its_name(), false));
+			this.part_of_the_battlefield.receives_land(new A_Land(the_land_card_to_play.provides_its_name(), false));
 			
 			System.out.println("After playing a land card, the hand of " + this.name + " has " + this.hand.provides_its_number_of_cards() + " cards and contains the following.\n" + this.hand);
 			System.out.println("After playing a land card, the part of the battlefield of " + this.name + " has " + this.part_of_the_battlefield.provides_its_number_of_cards() + " cards and contains the following.\n" + this.part_of_the_battlefield);
@@ -362,6 +378,11 @@ public class A_Player
 	
 	public String provides_her_name() {
 		return this.name;
+	}
+	
+	
+	public void provides_mana_for_casting_a_spell_using(A_Card the_card) {
+		
 	}
 	
 	
