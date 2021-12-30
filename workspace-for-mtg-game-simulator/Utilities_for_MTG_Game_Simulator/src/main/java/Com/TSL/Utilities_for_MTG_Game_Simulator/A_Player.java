@@ -15,6 +15,7 @@ public class A_Player
 	private static int STARTING_HAND_SIZE = 7;
 	
 	private A_Deck deck;
+	private A_Dictionary_Of_Permanent_Names_And_Encapsulators_For_A_Method_To_Provide_An_Array_Of_Possible_Mana_Contributions dictionary_of_permanent_names_and_encapsulators_for_a_method_to_provide_an_array_of_possible_mana_contributions;
 	private An_Exile exile;
 	private A_Graveyard graveyard;
 	private A_Hand hand;
@@ -34,9 +35,10 @@ public class A_Player
 	 * Each player begins the game with a starting life total of 20.
 	 */
 	
-	public A_Player(A_Deck the_deck_to_use, String the_name_to_use, A_Stack the_stack_to_use)
+	public A_Player(A_Deck the_deck_to_use, String the_name_to_use, A_Stack the_stack_to_use, A_Dictionary_Of_Permanent_Names_And_Encapsulators_For_A_Method_To_Provide_An_Array_Of_Possible_Mana_Contributions the_dictionary_to_use)
 	{
 		this.deck = the_deck_to_use;
+		this.dictionary_of_permanent_names_and_encapsulators_for_a_method_to_provide_an_array_of_possible_mana_contributions = the_dictionary_to_use;
 		this.exile = new An_Exile();
 		this.graveyard = new A_Graveyard();
 		this.hand = new A_Hand();
@@ -185,7 +187,13 @@ public class A_Player
 		while (this.stack.contains_spells()) {
 			A_Spell the_spell = this.stack.provides_its_top_spell();
 			if (the_spell.provides_its_type().equals("Creature")) {
-				this.part_of_the_battlefield.receives_creature(new A_Creature(the_spell.provides_its_name(), false));
+				this.part_of_the_battlefield.receives_creature(
+					new A_Creature(
+						this.dictionary_of_permanent_names_and_encapsulators_for_a_method_to_provide_an_array_of_possible_mana_contributions.provides_the_encapsulator_for_a_method_to_provide_an_array_of_possible_mana_contributions_corresponding_to(the_spell.provides_its_name()),
+						the_spell.provides_its_name(),
+						false
+					)
+				);
 			}
 		}
 		System.out.println(this.part_of_the_battlefield);
@@ -257,6 +265,16 @@ public class A_Player
 	public A_Mana_Pool determines_available_mana() {
 		
 		A_Mana_Pool the_available_mana = new A_Mana_Pool(0, 0, 0, 0, 0, 0);
+		
+		for (A_Land the_land : this.part_of_the_battlefield.provides_its_list_of_lands()) {
+			
+			A_Mana_Contribution[] the_array_of_possible_mana_contributions = the_land.provides_an_array_of_possible_mana_contributions();
+			
+			for (int i = 0; i < the_array_of_possible_mana_contributions.length; i++) {
+				System.out.println("Possible Mana Contributions\n" + the_array_of_possible_mana_contributions[i]);
+			}
+			
+		}
 		
 		for (A_Land the_land : this.part_of_the_battlefield.provides_its_list_of_lands()) {
 			switch (the_land.provides_its_name()) {
@@ -349,7 +367,13 @@ public class A_Player
 			System.out.println("    " + this.name + " is playing a land.");
 			int the_index_of_the_land_card_to_play = this.random_data_generator.nextInt(0, this.hand.provides_its_number_of_land_cards() - 1);
 			A_Land_Card the_land_card_to_play = this.hand.provides_the_land_card_at_index(the_index_of_the_land_card_to_play);
-			this.part_of_the_battlefield.receives_land(new A_Land(the_land_card_to_play.provides_its_name(), false));
+			this.part_of_the_battlefield.receives_land(
+				new A_Land(
+					this.dictionary_of_permanent_names_and_encapsulators_for_a_method_to_provide_an_array_of_possible_mana_contributions.provides_the_encapsulator_for_a_method_to_provide_an_array_of_possible_mana_contributions_corresponding_to(the_land_card_to_play.provides_its_name()),
+					the_land_card_to_play.provides_its_name(),
+					false
+				)
+			);
 			
 			System.out.println("After playing a land card, the hand of " + this.name + " has " + this.hand.provides_its_number_of_cards() + " cards and contains the following.\n" + this.hand);
 			System.out.println("After playing a land card, the part of the battlefield of " + this.name + " has " + this.part_of_the_battlefield.provides_its_number_of_cards() + " cards and contains the following.\n" + this.part_of_the_battlefield);
