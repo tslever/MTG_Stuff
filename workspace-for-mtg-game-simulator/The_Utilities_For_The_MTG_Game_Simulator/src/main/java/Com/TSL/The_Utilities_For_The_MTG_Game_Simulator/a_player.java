@@ -262,19 +262,65 @@ public class a_player
 	}
 	
 	
+	public ArrayList<a_mana_contribution[]> provides_a_list_of_combinations_of_mana_contributions() {
+		// https://www.geeksforgeeks.org/combinations-from-n-arrays-picking-one-element-from-each-array/
+		
+		ArrayList<a_mana_contribution[]> The_List_Of_Combinations_Of_Mana_Contributions = new ArrayList<a_mana_contribution[]>();
+		
+		ArrayList<a_permanent> The_List_Of_Permanents = this.Part_Of_The_Battlefield.provides_its_list_of_permanents();
+		int The_Number_Of_Permanents = The_List_Of_Permanents.size();
+		
+		// Initialize an array of present indices, where each index represents a position in a permanent's array of mana contributions.
+		int[] The_Array_Of_Present_Indices = new int[The_Number_Of_Permanents];
+		for (int i = 0; i < The_Number_Of_Permanents; i++) {
+			The_Array_Of_Present_Indices[i] = 0;
+		}
+		
+		boolean A_Permanent_Has_More_Possible_Contributions = true;
+		while (A_Permanent_Has_More_Possible_Contributions) {
+			
+			// Add to the list of combinations of mana contributions a combination consisting of the present mana contribution for each permanent.
+			a_mana_contribution[] The_Combination_Of_Mana_Contributions = new a_mana_contribution[The_Number_Of_Permanents];
+			for (int i = 0; i < The_Number_Of_Permanents; i++) {
+				a_permanent The_Permanent = The_List_Of_Permanents.get(i);
+				a_mana_contribution[] The_Array_Of_Mana_Contributions = The_Permanent.provides_an_array_of_possible_mana_contributions();
+				The_Combination_Of_Mana_Contributions[i] = The_Array_Of_Mana_Contributions[The_Array_Of_Present_Indices[i]];
+			}
+			The_List_Of_Combinations_Of_Mana_Contributions.add(The_Combination_Of_Mana_Contributions);
+			
+			// Find the index of the right-most permanent with more possible mana contributions after the present mana contribution.
+			int The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions = The_Number_Of_Permanents - 1;
+			while ((The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions >= 0) && ((The_Array_Of_Present_Indices[The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions] + 1) >= The_List_Of_Permanents.get(The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions).provides_an_array_of_possible_mana_contributions().length)) {
+				The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions--;
+			}
+			
+			// If no permanent has more possible contributions after the present mana contribution, stop looking for combinations of mana contributions.
+			if (The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions < 0) {
+				A_Permanent_Has_More_Possible_Contributions = false;
+			}
+			
+			// Else; i.e., if there is a right-most permanent P with another possible mana contribution C, consider combinations of mana contributions with mana contribution C and all mana contributions of all permanents to the right of P.
+			else {			
+				The_Array_Of_Present_Indices[The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions] = The_Array_Of_Present_Indices[The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions] + 1;
+				
+				for (int i = The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions + 1; i < The_Number_Of_Permanents; i++) {
+					The_Array_Of_Present_Indices[i] = 0;
+				}
+			}
+			
+		}
+		
+		return The_List_Of_Combinations_Of_Mana_Contributions;
+		
+	}
+	
+	
 	public a_mana_pool determines_available_mana() {
 		
 		a_mana_pool The_Available_Mana = new a_mana_pool(0, 0, 0, 0, 0, 0);
 		
-		for (a_land The_Land : this.Part_Of_The_Battlefield.provides_its_list_of_lands()) {
-			
-			a_mana_contribution[] The_Array_Of_Possible_Mana_Contributions = The_Land.provides_an_array_of_possible_mana_contributions();
-			
-			for (int i = 0; i < The_Array_Of_Possible_Mana_Contributions.length; i++) {
-				System.out.println("Possible Mana Contributions\n" + The_Array_Of_Possible_Mana_Contributions[i]);
-			}
-			
-		}
+		this.provides_a_list_of_combinations_of_mana_contributions();
+		
 		
 		for (a_land The_Land : this.Part_Of_The_Battlefield.provides_its_list_of_lands()) {
 			switch (The_Land.provides_its_name()) {
@@ -375,7 +421,7 @@ public class a_player
 			);
 			
 			System.out.println("After playing a land card, the hand of " + this.Name + " has " + this.Hand.provides_its_number_of_cards() + " cards and contains the following.\n" + this.Hand);
-			System.out.println("After playing a land card, the part of the battlefield of " + this.Name + " has " + this.Part_Of_The_Battlefield.provides_its_number_of_cards() + " cards and contains the following.\n" + this.Part_Of_The_Battlefield);
+			System.out.println("After playing a land card, the part of the battlefield of " + this.Name + " has " + this.Part_Of_The_Battlefield.provides_its_number_of_permanents() + " cards and contains the following.\n" + this.Part_Of_The_Battlefield);
 		}
 		
 	}

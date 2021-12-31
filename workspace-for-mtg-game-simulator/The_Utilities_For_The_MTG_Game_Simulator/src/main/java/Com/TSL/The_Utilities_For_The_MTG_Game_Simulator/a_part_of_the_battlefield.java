@@ -46,7 +46,32 @@ public class a_part_of_the_battlefield {
 		return this.List_Of_Planeswalkers;
 	}
 	
-	public int provides_its_number_of_cards() {
+	
+	public ArrayList<a_permanent> provides_its_list_of_permanents() {
+		
+		ArrayList<a_permanent> The_List_Of_Permanents = new ArrayList<a_permanent>();
+		
+		for (an_artifact The_Artifact : this.List_Of_Artifacts) {
+			The_List_Of_Permanents.add(The_Artifact);
+		}
+		for (a_creature The_Creature : this.List_Of_Creatures) {
+			The_List_Of_Permanents.add(The_Creature);
+		}
+		for (an_enchantment The_Enchantment : this.List_Of_Enchantments) {
+			The_List_Of_Permanents.add(The_Enchantment);
+		}
+		for (a_land The_Land : this.List_Of_Lands) {
+			The_List_Of_Permanents.add(The_Land);
+		}
+		for (a_planeswalker The_Planeswalker : this.List_Of_Planeswalkers) {
+			The_List_Of_Permanents.add(The_Planeswalker);
+		}
+		
+		return The_List_Of_Permanents;
+	}
+	
+	
+	public int provides_its_number_of_permanents() {
 		return
 			this.List_Of_Artifacts.size() +
 			this.List_Of_Creatures.size() +
