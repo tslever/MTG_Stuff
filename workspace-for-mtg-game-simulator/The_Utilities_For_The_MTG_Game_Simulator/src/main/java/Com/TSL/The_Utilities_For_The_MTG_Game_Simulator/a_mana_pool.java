@@ -58,6 +58,17 @@ public class a_mana_pool extends a_mana_set {
 		this.Number_Of_White_Mana++;
 	}
 	
+	
+	public void increases_by(a_mana_contribution The_Mana_Contribution) {
+		this.Number_Of_Black_Mana += The_Mana_Contribution.provides_its_number_of_black_mana();
+		this.Number_Of_Blue_Mana += The_Mana_Contribution.provides_its_number_of_blue_mana();
+		this.Number_Of_Colorless_Mana += The_Mana_Contribution.provides_its_number_of_colorless_mana();
+		this.Number_Of_Green_Mana += The_Mana_Contribution.provides_its_number_of_green_mana();
+		this.Number_Of_Red_Mana += The_Mana_Contribution.provides_its_number_of_red_mana();
+		this.Number_Of_White_Mana += The_Mana_Contribution.provides_its_number_of_white_mana();
+	}
+	
+	
 	public void decreases_by(a_mana_cost The_Mana_Cost) {
 		this.Number_Of_Black_Mana -= The_Mana_Cost.provides_its_number_of_black_mana();
 		this.Number_Of_Blue_Mana -= The_Mana_Cost.provides_its_number_of_blue_mana();

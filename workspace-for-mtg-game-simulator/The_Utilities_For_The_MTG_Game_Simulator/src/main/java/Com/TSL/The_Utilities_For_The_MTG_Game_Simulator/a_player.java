@@ -167,10 +167,13 @@ public class a_player
 		// Rule 601.2: To cast a spell is to [use a card to create a spell], put [the spell] on the stack, and pay its mana costs, so that [the spell] will eventually resolve and have its effect. Casting a spell includes proposal of the spell (rules 601.2a-d) and determination and payment of costs (rules 601.2f-h). To cast a spell, a player follows the steps listed below, in order. A player must be legally allowed to cast the spell to begin this process (see rule 601.3). If a player is unable to comply with the requirements of a step listed below while performing that step, the casting of the spell is illegal; the game returns to the moment before the casting of that spell was proposed (see rule 723, "Handling Illegal Actions").
 		// Rule 601.2a: To propose the casting of a spell, a player first [uses a card to create a spell and puts the spell on] the stack. [The spell] becomes the topmost object on the stack. [The spell] has all the characteristics of the card... associated with it, and [the casting] player becomes its controller. The spell remains on the stack until it's countered, it resolves, or an effect moves it elsewhere.
 		// Rule 601.2e: The game checks to see if the proposed spell can legally be cast. If the proposed spell is illegal, the game returns to the moment before the casting of that spell was proposed (see rule 723, "Handling Illegal Actions").
-		a_mana_pool The_Available_Mana = this.determines_available_mana();
-		System.out.println("The following mana is available.\n" + The_Available_Mana);
+		ArrayList<a_mana_pool> The_List_Of_Possible_Mana_Pools = this.provides_a_list_of_possible_mana_pools();
+		System.out.println("The following are possible mana pools.");
+		for (a_mana_pool The_Possible_Mana_Pool : The_List_Of_Possible_Mana_Pools) {
+			System.out.println(The_Possible_Mana_Pool);
+		}
 		
-		ArrayList<a_card> The_List_Of_Cards_That_May_Be_Used_To_Cast_Spells = this.provides_a_list_of_cards_that_are_playable_given(The_Available_Mana);
+		ArrayList<a_card> The_List_Of_Cards_That_May_Be_Used_To_Cast_Spells = this.provides_a_list_of_cards_that_are_playable_given(The_List_Of_Possible_Mana_Pools);
 		System.out.println("The following cards are playable.");
 		for (a_card the_card : The_List_Of_Cards_That_May_Be_Used_To_Cast_Spells) {
 			System.out.println(the_card.provides_its_name());
@@ -262,10 +265,10 @@ public class a_player
 	}
 	
 	
-	public ArrayList<a_mana_contribution[]> provides_a_list_of_combinations_of_mana_contributions() {
+	public ArrayList<a_mana_pool> provides_a_list_of_possible_mana_pools() {
 		// https://www.geeksforgeeks.org/combinations-from-n-arrays-picking-one-element-from-each-array/
 		
-		ArrayList<a_mana_contribution[]> The_List_Of_Combinations_Of_Mana_Contributions = new ArrayList<a_mana_contribution[]>();
+		ArrayList<a_mana_pool> The_List_Of_Possible_Mana_Pools = new ArrayList<a_mana_pool>();
 		
 		ArrayList<a_permanent> The_List_Of_Permanents = this.Part_Of_The_Battlefield.provides_its_list_of_permanents();
 		int The_Number_Of_Permanents = The_List_Of_Permanents.size();
@@ -279,14 +282,14 @@ public class a_player
 		boolean A_Permanent_Has_More_Possible_Contributions = true;
 		while (A_Permanent_Has_More_Possible_Contributions) {
 			
-			// Add to the list of combinations of mana contributions a combination consisting of the present mana contribution for each permanent.
-			a_mana_contribution[] The_Combination_Of_Mana_Contributions = new a_mana_contribution[The_Number_Of_Permanents];
+			// Add to the list of possible mana pools a mana pool corresponding to the present mana contribution for each permanent.
+			a_mana_pool The_Possible_Mana_Pool = new a_mana_pool(0, 0, 0, 0, 0, 0);
 			for (int i = 0; i < The_Number_Of_Permanents; i++) {
 				a_permanent The_Permanent = The_List_Of_Permanents.get(i);
 				a_mana_contribution[] The_Array_Of_Mana_Contributions = The_Permanent.provides_an_array_of_possible_mana_contributions();
-				The_Combination_Of_Mana_Contributions[i] = The_Array_Of_Mana_Contributions[The_Array_Of_Present_Indices[i]];
+				The_Possible_Mana_Pool.increases_by(The_Array_Of_Mana_Contributions[The_Array_Of_Present_Indices[i]]);
 			}
-			The_List_Of_Combinations_Of_Mana_Contributions.add(The_Combination_Of_Mana_Contributions);
+			The_List_Of_Possible_Mana_Pools.add(The_Possible_Mana_Pool);
 			
 			// Find the index of the right-most permanent with more possible mana contributions after the present mana contribution.
 			int The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions = The_Number_Of_Permanents - 1;
@@ -310,17 +313,20 @@ public class a_player
 			
 		}
 		
-		return The_List_Of_Combinations_Of_Mana_Contributions;
+		return The_List_Of_Possible_Mana_Pools;
 		
 	}
 	
 	
-	public a_mana_pool determines_available_mana() {
+	/*public a_mana_pool determines_available_mana() {
 		
 		a_mana_pool The_Available_Mana = new a_mana_pool(0, 0, 0, 0, 0, 0);
 		
-		this.provides_a_list_of_combinations_of_mana_contributions();
-		
+		ArrayList<a_mana_pool> The_List_Of_Possible_Mana_Pools = this.provides_a_list_of_possible_mana_pools();
+		System.out.println("The following are possible mana pools.");
+		for (a_mana_pool The_Possible_Mana_Pool : The_List_Of_Possible_Mana_Pools) {
+			System.out.println(The_Possible_Mana_Pool);
+		}
 		
 		for (a_land The_Land : this.Part_Of_The_Battlefield.provides_its_list_of_lands()) {
 			switch (The_Land.provides_its_name()) {
@@ -343,7 +349,7 @@ public class a_player
 		}
 		
 		return The_Available_Mana;
-	}
+	}*/
 	
 	
 	// TODO: Use discretion in determining permanents to untap.
@@ -427,17 +433,17 @@ public class a_player
 	}
 	
 	
-	public ArrayList<a_card> provides_a_list_of_cards_that_are_playable_given(a_mana_pool The_Available_Mana) {
+	public ArrayList<a_card> provides_a_list_of_cards_that_are_playable_given(ArrayList<a_mana_pool> The_List_Of_Possible_Mana_Pools) {
 		
 		ArrayList<a_card> The_List_Of_Cards_That_May_Be_Used_To_Cast_Spells = new ArrayList<a_card>();
 		for (a_card The_Card : this.Hand.provides_its_list_of_nonland_cards()) {
-			if (The_Available_Mana.is_sufficient_for(The_Card.provides_its_mana_cost())) {
-				The_List_Of_Cards_That_May_Be_Used_To_Cast_Spells.add(The_Card);
-				//System.out.println("The mana pool of\n" + the_available_mana + "\nis sufficient for the mana cost of " + the_card.provides_its_name() + ",\n" + the_card.provides_its_mana_cost());
+			for (a_mana_pool The_Possible_Mana_Pool : The_List_Of_Possible_Mana_Pools) {
+				if (The_Possible_Mana_Pool.is_sufficient_for(The_Card.provides_its_mana_cost())) {
+					The_List_Of_Cards_That_May_Be_Used_To_Cast_Spells.add(The_Card);
+					//System.out.println("The mana pool of\n" + The_Possible_Mana_Pool + "\nis sufficient for the mana cost of " + The_Card.provides_its_name() + ",\n" + The_Card.provides_its_mana_cost());
+					break;
+				}
 			}
-			//else {
-			//	System.out.println("The mana pool of\n" + the_available_mana + "\nis insufficient for the mana cost of " + the_card.provides_its_name() + ",\n" + the_card.provides_its_mana_cost());
-			//}
 		}
 		
 		return The_List_Of_Cards_That_May_Be_Used_To_Cast_Spells;
