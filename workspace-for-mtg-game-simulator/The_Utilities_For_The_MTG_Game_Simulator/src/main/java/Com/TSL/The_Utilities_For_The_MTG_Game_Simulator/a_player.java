@@ -15,7 +15,6 @@ public class a_player
 	private static int STARTING_HAND_SIZE = 7;
 	
 	private a_deck Deck;
-	private a_dictionary_of_permanent_names_and_encapsulators_for_a_method_to_provide_an_array_of_possible_mana_contributions Dictionary_Of_Permanent_Names_And_Encapsulators_For_A_Method_To_Provide_An_Array_Of_Possible_Mana_Contributions;
 	private an_exile Exile;
 	private a_graveyard Graveyard;
 	private a_hand Hand;
@@ -35,10 +34,9 @@ public class a_player
 	 * Each player begins the game with a starting life total of 20.
 	 */
 	
-	public a_player(a_deck The_Deck_To_Use, String The_Name_To_Use, a_stack The_Stack_To_Use, a_dictionary_of_permanent_names_and_encapsulators_for_a_method_to_provide_an_array_of_possible_mana_contributions The_Dictionary_To_Use)
+	public a_player(a_deck The_Deck_To_Use, String The_Name_To_Use, a_stack The_Stack_To_Use)
 	{
 		this.Deck = The_Deck_To_Use;
-		this.Dictionary_Of_Permanent_Names_And_Encapsulators_For_A_Method_To_Provide_An_Array_Of_Possible_Mana_Contributions = The_Dictionary_To_Use;
 		this.Exile = new an_exile();
 		this.Graveyard = new a_graveyard();
 		this.Hand = new a_hand();
@@ -167,19 +165,17 @@ public class a_player
 		// Rule 601.2: To cast a spell is to [use a card to create a spell], put [the spell] on the stack, and pay its mana costs, so that [the spell] will eventually resolve and have its effect. Casting a spell includes proposal of the spell (rules 601.2a-d) and determination and payment of costs (rules 601.2f-h). To cast a spell, a player follows the steps listed below, in order. A player must be legally allowed to cast the spell to begin this process (see rule 601.3). If a player is unable to comply with the requirements of a step listed below while performing that step, the casting of the spell is illegal; the game returns to the moment before the casting of that spell was proposed (see rule 723, "Handling Illegal Actions").
 		// Rule 601.2a: To propose the casting of a spell, a player first [uses a card to create a spell and puts the spell on] the stack. [The spell] becomes the topmost object on the stack. [The spell] has all the characteristics of the card... associated with it, and [the casting] player becomes its controller. The spell remains on the stack until it's countered, it resolves, or an effect moves it elsewhere.
 		// Rule 601.2e: The game checks to see if the proposed spell can legally be cast. If the proposed spell is illegal, the game returns to the moment before the casting of that spell was proposed (see rule 723, "Handling Illegal Actions").
-		ArrayList<a_mana_pool> The_List_Of_Possible_Mana_Pools = this.provides_a_list_of_possible_mana_pools();
-		System.out.println("The following are possible mana pools.");
-		for (a_mana_pool The_Possible_Mana_Pool : The_List_Of_Possible_Mana_Pools) {
-			System.out.println(The_Possible_Mana_Pool);
-		}
+		this.determines_playability_mana_subpools_and_lists_of_mana_contributing_permanents_for_her_hand_cards();
 		
-		ArrayList<a_card> The_List_Of_Cards_That_May_Be_Used_To_Cast_Spells = this.provides_a_list_of_cards_that_are_playable_given(The_List_Of_Possible_Mana_Pools);
-		System.out.println("The following cards are playable.");
-		for (a_card the_card : The_List_Of_Cards_That_May_Be_Used_To_Cast_Spells) {
-			System.out.println(the_card.provides_its_name());
+		ArrayList<a_card> The_List_Of_Cards_That_May_Be_Used_To_Cast_A_Spell = new ArrayList<a_card>();
+		for (a_card The_Card : this.Hand.provides_its_list_of_cards()) {
+			if (The_Card.is_playable()) {
+				The_List_Of_Cards_That_May_Be_Used_To_Cast_A_Spell.add(The_Card);
+			}
 		}
-
-		a_card The_Card_To_Use_To_Cast_A_Spell = this.chooses_a_card_to_use_to_cast_a_spell_from(The_List_Of_Cards_That_May_Be_Used_To_Cast_Spells);
+		System.out.println("List of cards that may be used to cast a spell: " + The_List_Of_Cards_That_May_Be_Used_To_Cast_A_Spell);
+		
+		a_card The_Card_To_Use_To_Cast_A_Spell = this.chooses_a_card_to_use_to_cast_a_spell_from(The_List_Of_Cards_That_May_Be_Used_To_Cast_A_Spell);
 		if (The_Card_To_Use_To_Cast_A_Spell != null) {
 			// Provide mana equal to the mana cost of the card.
 			// Cast the card.
@@ -190,13 +186,7 @@ public class a_player
 		while (this.Stack.contains_spells()) {
 			a_spell The_Spell = this.Stack.provides_its_top_spell();
 			if (The_Spell.provides_its_type().equals("Creature")) {
-				this.Part_Of_The_Battlefield.receives_creature(
-					new a_creature(
-						this.Dictionary_Of_Permanent_Names_And_Encapsulators_For_A_Method_To_Provide_An_Array_Of_Possible_Mana_Contributions.provides_the_encapsulator_for_a_method_to_provide_an_array_of_possible_mana_contributions_corresponding_to(The_Spell.provides_its_name()),
-						The_Spell.provides_its_name(),
-						false
-					)
-				);
+				this.Part_Of_The_Battlefield.receives_creature(new a_creature(The_Spell.provides_its_name(), false));
 			}
 		}
 		System.out.println(this.Part_Of_The_Battlefield);
@@ -207,6 +197,82 @@ public class a_player
 		// Rule 500.5: When a phase or step ends, any effects scheduled to last "until end of" that phase or step expire... Effects that last "until end of combat" expire at the end of the combat phase.
 		
 		this.Has_Priority = false;
+	}
+	
+	public void determines_playability_mana_subpools_and_lists_of_mana_contributing_permanents_for_her_hand_cards() {
+		for (a_card The_Card : this.Hand.provides_its_list_of_cards()) {
+			this.determines_playability_a_mana_subpool_to_be_used_and_a_list_of_mana_contributing_permanents_for(The_Card);
+		}
+	}
+		
+	public void determines_playability_a_mana_subpool_to_be_used_and_a_list_of_mana_contributing_permanents_for(a_card The_Card) {
+		The_Card.becomes_not_playable();
+		The_Card.nullifies_its_mana_subpool();
+		The_Card.nullifies_its_list_of_mana_contributing_permanents();
+		if (The_Card.provides_its_type().contains("Land")) {
+			return;
+		}
+		ArrayList<a_mana_pool_and_a_list_of_permanents> The_List_Of_Objects_Of_Type_A_Mana_Pool_And_A_List_Of_Permanents = this.provides_a_list_of_objects_of_type_a_mana_pool_and_a_list_of_permanents();
+		for (a_mana_pool_and_a_list_of_permanents The_Mana_Pool_And_The_List_Of_Permanents : The_List_Of_Objects_Of_Type_A_Mana_Pool_And_A_List_Of_Permanents) {
+			a_mana_pool The_Mana_Subpool = The_Mana_Pool_And_The_List_Of_Permanents.provides_its_mana_pool();
+			if (The_Mana_Subpool.is_sufficient_for(The_Card.provides_its_mana_cost())) {
+				The_Card.becomes_playable();
+				The_Card.receives(The_Mana_Subpool);
+				The_Card.receives(The_Mana_Pool_And_The_List_Of_Permanents.provides_its_list_of_permanents());
+				break;
+			}
+		}
+	}
+	
+	public ArrayList<a_mana_pool_and_a_list_of_permanents> provides_a_list_of_objects_of_type_a_mana_pool_and_a_list_of_permanents() {
+		ArrayList<a_mana_pool_and_a_list_of_permanents> The_List_Of_Objects_Of_Type_A_Mana_Pool_And_A_List_of_Permanents = new ArrayList<a_mana_pool_and_a_list_of_permanents>();
+		ArrayList<a_permanent> The_List_Of_Permanents = this.Part_Of_The_Battlefield.provides_its_list_of_permanents();
+		int The_Number_Of_Permanents = The_List_Of_Permanents.size();
+		
+		// Initialize an array of present indices, where each index represents a position in a permanent's array of mana contributions.
+		int[] The_Array_Of_Present_Indices = new int[The_Number_Of_Permanents];
+		for (int i = 0; i < The_Number_Of_Permanents; i++) {
+			The_Array_Of_Present_Indices[i] = 0;
+		}
+		
+		a_provider_of_an_array_of_possible_mana_contributions The_Provider_Of_An_Array_Of_Possible_Mana_Contributions = new a_provider_of_an_array_of_possible_mana_contributions();
+		
+		boolean A_Permanent_Has_More_Possible_Contributions = true;
+		while (A_Permanent_Has_More_Possible_Contributions) {
+			
+			// Add to the list of objects of type a possible mana pool and a list of permanents a mana pool corresponding to the present mana contribution for each permanent and a list of these permanents.
+			a_mana_pool The_Possible_Mana_Pool = new a_mana_pool(0, 0, 0, 0, 0, 0);
+			ArrayList<a_permanent> The_List_Of_Contributing_Permanents = new ArrayList<a_permanent>();
+			for (int i = 0; i < The_Number_Of_Permanents; i++) {
+				a_permanent The_Permanent = The_List_Of_Permanents.get(i);
+				a_mana_contribution[] The_Array_Of_Possible_Mana_Contributions = The_Provider_Of_An_Array_Of_Possible_Mana_Contributions.provides_the_array_of_possible_mana_contributions_corresponding_to(The_Permanent.provides_its_name());
+				The_Possible_Mana_Pool.increases_by(The_Array_Of_Possible_Mana_Contributions[The_Array_Of_Present_Indices[i]]);
+				The_List_Of_Contributing_Permanents.add(The_Permanent);
+			}
+			The_List_Of_Objects_Of_Type_A_Mana_Pool_And_A_List_of_Permanents.add(new a_mana_pool_and_a_list_of_permanents(The_Possible_Mana_Pool, The_List_Of_Contributing_Permanents));
+						
+			// Find the index of the right-most permanent with more possible mana contributions after the present mana contribution.
+			int The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions = The_Number_Of_Permanents - 1;
+			while ((The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions >= 0) && ((The_Array_Of_Present_Indices[The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions] + 1) >= The_Provider_Of_An_Array_Of_Possible_Mana_Contributions.provides_the_array_of_possible_mana_contributions_corresponding_to(The_List_Of_Permanents.get(The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions).provides_its_name()).length)) {
+				The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions--;
+			}
+			
+			// If no permanent has more possible contributions after the present mana contribution, stop looking for combinations of mana contributions.
+			if (The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions < 0) {
+				A_Permanent_Has_More_Possible_Contributions = false;
+			}
+			
+			// Else; i.e., if there is a right-most permanent P with another possible mana contribution C, consider combinations of mana contributions with mana contribution C and all mana contributions of all permanents to the right of P.
+			else {			
+				The_Array_Of_Present_Indices[The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions] = The_Array_Of_Present_Indices[The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions] + 1;
+				for (int i = The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions + 1; i < The_Number_Of_Permanents; i++) {
+					The_Array_Of_Present_Indices[i] = 0;
+				}
+			}
+			
+		}
+		
+		return The_List_Of_Objects_Of_Type_A_Mana_Pool_And_A_List_of_Permanents;
 	}
 	
 	
@@ -263,94 +329,6 @@ public class a_player
 		
 		this.Has_Priority = false;
 	}
-	
-	
-	public ArrayList<a_mana_pool> provides_a_list_of_possible_mana_pools() {
-		// https://www.geeksforgeeks.org/combinations-from-n-arrays-picking-one-element-from-each-array/
-		
-		ArrayList<a_mana_pool> The_List_Of_Possible_Mana_Pools = new ArrayList<a_mana_pool>();
-		
-		ArrayList<a_permanent> The_List_Of_Permanents = this.Part_Of_The_Battlefield.provides_its_list_of_permanents();
-		int The_Number_Of_Permanents = The_List_Of_Permanents.size();
-		
-		// Initialize an array of present indices, where each index represents a position in a permanent's array of mana contributions.
-		int[] The_Array_Of_Present_Indices = new int[The_Number_Of_Permanents];
-		for (int i = 0; i < The_Number_Of_Permanents; i++) {
-			The_Array_Of_Present_Indices[i] = 0;
-		}
-		
-		boolean A_Permanent_Has_More_Possible_Contributions = true;
-		while (A_Permanent_Has_More_Possible_Contributions) {
-			
-			// Add to the list of possible mana pools a mana pool corresponding to the present mana contribution for each permanent.
-			a_mana_pool The_Possible_Mana_Pool = new a_mana_pool(0, 0, 0, 0, 0, 0);
-			for (int i = 0; i < The_Number_Of_Permanents; i++) {
-				a_permanent The_Permanent = The_List_Of_Permanents.get(i);
-				a_mana_contribution[] The_Array_Of_Mana_Contributions = The_Permanent.provides_an_array_of_possible_mana_contributions();
-				The_Possible_Mana_Pool.increases_by(The_Array_Of_Mana_Contributions[The_Array_Of_Present_Indices[i]]);
-			}
-			The_List_Of_Possible_Mana_Pools.add(The_Possible_Mana_Pool);
-			
-			// Find the index of the right-most permanent with more possible mana contributions after the present mana contribution.
-			int The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions = The_Number_Of_Permanents - 1;
-			while ((The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions >= 0) && ((The_Array_Of_Present_Indices[The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions] + 1) >= The_List_Of_Permanents.get(The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions).provides_an_array_of_possible_mana_contributions().length)) {
-				The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions--;
-			}
-			
-			// If no permanent has more possible contributions after the present mana contribution, stop looking for combinations of mana contributions.
-			if (The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions < 0) {
-				A_Permanent_Has_More_Possible_Contributions = false;
-			}
-			
-			// Else; i.e., if there is a right-most permanent P with another possible mana contribution C, consider combinations of mana contributions with mana contribution C and all mana contributions of all permanents to the right of P.
-			else {			
-				The_Array_Of_Present_Indices[The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions] = The_Array_Of_Present_Indices[The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions] + 1;
-				
-				for (int i = The_Index_Of_The_Right_Most_Permanent_With_More_Possible_Mana_Contributions + 1; i < The_Number_Of_Permanents; i++) {
-					The_Array_Of_Present_Indices[i] = 0;
-				}
-			}
-			
-		}
-		
-		return The_List_Of_Possible_Mana_Pools;
-		
-	}
-	
-	
-	/*public a_mana_pool determines_available_mana() {
-		
-		a_mana_pool The_Available_Mana = new a_mana_pool(0, 0, 0, 0, 0, 0);
-		
-		ArrayList<a_mana_pool> The_List_Of_Possible_Mana_Pools = this.provides_a_list_of_possible_mana_pools();
-		System.out.println("The following are possible mana pools.");
-		for (a_mana_pool The_Possible_Mana_Pool : The_List_Of_Possible_Mana_Pools) {
-			System.out.println(The_Possible_Mana_Pool);
-		}
-		
-		for (a_land The_Land : this.Part_Of_The_Battlefield.provides_its_list_of_lands()) {
-			switch (The_Land.provides_its_name()) {
-				case "Swamp":
-					The_Available_Mana.increases_by_one_black_mana();
-					break;
-				case "Island":
-					The_Available_Mana.increases_by_one_blue_mana();
-					break;
-				case "Forest":
-					The_Available_Mana.increases_by_one_green_mana();
-					break;
-				case "Mountain":
-					The_Available_Mana.increases_by_one_red_mana();
-					break;
-				case "Plains":
-					The_Available_Mana.increases_by_one_white_mana();
-					break;
-			}
-		}
-		
-		return The_Available_Mana;
-	}*/
-	
 	
 	// TODO: Use discretion in determining permanents to untap.
 	public void determines_her_permanents_to_untap() {
@@ -418,20 +396,11 @@ public class a_player
 			System.out.println("    " + this.Name + " is playing a land.");
 			int The_Index_Of_The_Land_Card_To_Play = this.Random_Data_Generator.nextInt(0, this.Hand.provides_its_number_of_land_cards() - 1);
 			a_land_card The_Land_Card_To_Play = this.Hand.provides_the_land_card_at_index(The_Index_Of_The_Land_Card_To_Play);
-			this.Part_Of_The_Battlefield.receives_land(
-				new a_land(
-					this.Dictionary_Of_Permanent_Names_And_Encapsulators_For_A_Method_To_Provide_An_Array_Of_Possible_Mana_Contributions.provides_the_encapsulator_for_a_method_to_provide_an_array_of_possible_mana_contributions_corresponding_to(The_Land_Card_To_Play.provides_its_name()),
-					The_Land_Card_To_Play.provides_its_name(),
-					false
-				)
-			);
-			
+			this.Part_Of_The_Battlefield.receives_land(new a_land(The_Land_Card_To_Play.provides_its_name(), false));
 			System.out.println("After playing a land card, the hand of " + this.Name + " has " + this.Hand.provides_its_number_of_cards() + " cards and contains the following.\n" + this.Hand);
 			System.out.println("After playing a land card, the part of the battlefield of " + this.Name + " has " + this.Part_Of_The_Battlefield.provides_its_number_of_permanents() + " cards and contains the following.\n" + this.Part_Of_The_Battlefield);
 		}
-		
 	}
-	
 	
 	public ArrayList<a_card> provides_a_list_of_cards_that_are_playable_given(ArrayList<a_mana_pool> The_List_Of_Possible_Mana_Pools) {
 		
